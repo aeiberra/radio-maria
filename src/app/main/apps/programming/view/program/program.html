@@ -1,0 +1,233 @@
+<div id="programming-program" class="page-layout simple tabbed" layout="column">
+
+    <!-- HEADER -->
+    <div class="header md-accent-bg" layout="row" layout-align="start center">
+        <div class="white-fg" layout="row" layout-align="start center" flex>
+            <md-button class="goto-programs-button md-icon-button" aria-label="Go to programs"
+                       ng-click="vm.gotoPrograms()"
+                       translate translate-attr-aria-label="PG.GO_TO_PROGRAMS">
+                <md-icon md-font-icon="icon-arrow-left"></md-icon>
+            </md-button>
+
+            <div layout="row" layout-align="start center">
+                <div class="program-image" hide-xs>
+                    <img ng-src="{{vm.program.images[0].url}}">
+                </div>
+
+                <div layout="column" layout-align="start start">
+                    <div class="h2">
+                        {{vm.program.name}}
+                    </div>
+                    <div class="subtitle secondary-text">
+                        <span translate="PG.PROGRAMS_DETAIL">Detalle del programa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <md-button class="md-raised md-background">
+                <span translate="PG.SAVE">SAVE</span>
+            </md-button>
+        </div>
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <md-tabs md-dynamic-height>
+
+            <md-tab>
+                <md-tab-label>
+                    <span translate="PG.BASIC_INFO">Basic Info</span>
+                </md-tab-label>
+
+                <md-tab-body>
+                    <div class="program-detail-form-container md-background-bg md-whiteframe-1dp">
+                        <form>
+                            <md-input-container class="md-block">
+                                <label translate="PG.PROGRAM_NAME">Nombre de Programa</label>
+                                <input type="text" ng-model="vm.program.name">
+                            </md-input-container>
+
+                            <h3 class="secondary-text" translate="PG.PROGRAM_DESCRIPTION">Descripcion del Programa</h3>
+                            <text-angular ta-toolbar="vm.taToolbar" ng-model="vm.program.description" class="pb-32"></text-angular>
+                        </form>
+                    </div>
+                </md-tab-body>
+            </md-tab>
+
+            <md-tab>
+                <md-tab-label>
+                    <span translate="PG.PROGRAM_IMAGES">Imagen de Programa</span>
+                </md-tab-label>
+
+                <md-tab-body>
+                    <div class="program-detail-form-container md-background-bg md-whiteframe-1dp">
+                        <div id="program-image-uploader"
+                             flow-init="vm.ngFlowOptions"
+                             flow-name="vm.ngFlow.flow"
+                             flow-files-submitted="vm.upload()"
+                             flow-file-added="vm.fileAdded($file)"
+                             flow-file-success="vm.fileSuccess($file, $message)"
+                             flow-complete="vm.uploadComplete()"
+                             flow-drop
+                             flow-drag-enter="vm.dropping=true"
+                             flow-drag-leave="vm.dropping=false"
+                             ng-class="{'dropping':vm.dropping}">
+
+                            <div class="drop-text hint-text" layout="row" layout-align="center center">
+                                <span translate="PG.DROP_TO_UPLOAD">Drop para cargar</span>
+                            </div>
+
+                            <div class="upload-button" layout="column" layout-align="center center">
+                                <md-button class="md-accent md-raised" flow-btn>
+                                    Upload
+                                </md-button>
+                                <span class="secondary-text mt-8">Puedes soltar una imagen aqui para subir. Solo PNG, JPG - Max. 8MB</span>
+                            </div>
+
+                            <div layout="row" layout-align="start start" layout-wrap>
+                                <div ng-repeat="image in vm.program.images" ng-switch="image.type">
+                                    <div class="program-image uploading" ng-switch-when="uploading" layout="row"
+                                         layout-align="center center">
+                                        <div class="overlay" layout="column" layout-align="center center">
+                                            <md-progress-linear md-mode="determinate"
+                                                                value="{{image.file.progress() * 100}}">
+                                            </md-progress-linear>
+                                        </div>
+                                        <img class="media" flow-img="image.file">
+                                    </div>
+
+                                    <div class="program-image" ng-switch-when="image" layout="row"
+                                         layout-align="center center">
+                                        <img class="media" ng-src="{{image.url}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </md-tab-body>
+            </md-tab>
+
+            <md-tab>
+                <md-tab-label>
+                    <span translate="PG.CONDUCTORS">Conductores</span>
+                </md-tab-label>
+
+                <md-tab-body>
+
+                  <div ng-controller="ContactChipDemoCtrl as ctrl" layout="column" ng-cloak class="program-detail-form-container md-background-bg md-whiteframe-1dp">
+
+                    <md-content class="md-padding autocomplete" layout="column">
+                      <h2 class="md-title">Seleccionar Conductor</h2>
+                      <md-contact-chips
+                        ng-model="ctrl.asyncContacts"
+                        md-contacts="ctrl.delayedQuerySearch($query)"
+                        md-contact-name="name"
+                        md-contact-image="image"
+                        md-contact-email="email"
+                        md-require-match="true"
+                        md-highlight-flags="i"
+                        filter-selected="ctrl.filterSelected"
+                        placeholder="Buscar">
+                      </md-contact-chips>
+
+                      <md-list class="fixedRows">
+                        <md-subheader class="md-no-sticky">Conductores:></md-subheader>
+                        <md-list-item class="md-2-line contact-item" ng-repeat="(index, contact) in ctrl.allContacts"
+                                      ng-if="ctrl.contacts.indexOf(contact) < 0">
+                          <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+                          <div class="md-list-item-text compact">
+                            <h3>{{contact.name}}</h3>
+                            <p>{{contact.email}}</p>
+                          </div>
+                        </md-list-item>
+                        <md-list-item class="md-2-line contact-item selected" ng-repeat="(index, contact) in ctrl.contacts">
+                          <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+                          <div class="md-list-item-text compact">
+                            <h3>{{contact.name}}</h3>
+                            <p>{{contact.email}}</p>
+                          </div>
+                        </md-list-item>
+                      </md-list>
+
+                      <br>
+                    </md-content>
+                  </div>
+
+                </md-tab-body>
+            </md-tab>
+
+            <md-tab>
+                <md-tab-label>
+                    <span translate="PG.INVENTORY">Inventorio</span>
+                </md-tab-label>
+
+                <md-tab-body>
+                    <div ng-controller="DayCtrl" class="program-detail-form-container md-background-bg md-whiteframe-1dp">
+                        <form>
+                          <md-input-container flex="50">
+                            <label>Dia</label>
+                            <md-select name="type" ng-model="day" required>
+                              <md-option value="0">DOM</md-option>
+                              <md-option value="1">LUN</md-option>
+                              <md-option value="2">MAR</md-option>
+                              <md-option value="3">MIE</md-option>
+                              <md-option value="4">JUE</md-option>
+                              <md-option value="5">VIE</md-option>
+                              <md-option value="6">SAB</md-option>
+                            </md-select>
+                          </md-input-container>
+
+                        </form>
+                    </div>
+                </md-tab-body>
+            </md-tab>
+
+            <md-tab>
+                <md-tab-label>
+                    <span translate="PG.SHIPPING">Shipping</span>
+                </md-tab-label>
+
+                <md-tab-body>
+                    <div class="program-detail-form-container md-background-bg md-whiteframe-1dp">
+                        <form>
+                            <div layout-gt-sm="row" layout-align="start center">
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <label translate="PG.WIDTH">Width</label>
+                                    <input type="text" ng-model="vm.program.width">
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <label translate="PG.HEIGHT">Height</label>
+                                    <input type="text" ng-model="vm.program.height">
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-sm>
+                                    <label translate="PG.DEPTH">Depth</label>
+                                    <input type="text" ng-model="vm.program.depth">
+                                </md-input-container>
+                            </div>
+
+                            <md-input-container class="md-block">
+                                <label translate="PG.WEIGHT">Weight</label>
+                                <input type="text" ng-model="vm.program.weight">
+                            </md-input-container>
+
+                            <md-input-container class="md-block md-icon-float">
+                                <label translate="PG.EXTRA_SHIPPING_FEE">Extra Shipping Fee</label>
+                                <md-icon md-font-icon="icon icon-currency-usd"></md-icon>
+                                <input type="text" ng-model="vm.program.extraShippingFee">
+                            </md-input-container>
+                        </form>
+                    </div>
+                </md-tab-body>
+            </md-tab>
+        </md-tabs>
+
+    </div>
+    <!-- / CONTENT -->
+
+</div>
